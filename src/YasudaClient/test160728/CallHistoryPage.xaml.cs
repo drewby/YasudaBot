@@ -12,13 +12,10 @@ namespace test160728
             InitializeComponent();
         }
 
-
-        void OnGoToChatScreen(object sender, EventArgs e)
+        public void OnGoToChatScreen(object sender, EventArgs e)
         {
-            /*var screenName = phoneNumberText.Text;
-            //var tweetList =  
-            App.PhoneNumbers.Add(phoneNumberText.Text);
-            Navigation.PushAsync(new CallHistoryPage());*/
+            Navigation.PushAsync(new ChatPage());
         }
+
     }
 }
