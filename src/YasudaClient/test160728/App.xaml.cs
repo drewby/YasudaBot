@@ -7,9 +7,12 @@ namespace test160728
     public partial class App : Application
     {
         public static List<string> PhoneNumbers { get; set; }
+        public static string ScreenName { get; set; }
+
         public App()
         {
             // InitializeComponent();
+            ScreenName = "";
             PhoneNumbers = new List<string>();
             MainPage = new NavigationPage(new MainPage());
         }

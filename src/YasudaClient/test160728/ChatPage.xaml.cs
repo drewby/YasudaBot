@@ -10,7 +10,7 @@ namespace test160728
         public ChatPage()
         {
             InitializeComponent();
-            this.Title = $"{App.PhoneNumbers.FirstOrDefault()}";
+            this.Title = $"{App.ScreenName}";
         }
     }
 }
