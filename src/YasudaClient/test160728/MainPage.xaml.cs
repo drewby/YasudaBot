@@ -14,7 +14,9 @@ namespace test160728
 
         async void OnCallHisotry(object sender, EventArgs e)
         {
-            var tweetList = await Core.Twitter.TweetList(phoneNumberText.Text);
+            var screenName = phoneNumberText.Text;
+            var tweetList = await Core.Twitter.TweetList(screenName);
+            App.ScreenName = screenName;
             App.PhoneNumbers.AddRange(tweetList);
             await Navigation.PushAsync(new CallHistoryPage());        
         }

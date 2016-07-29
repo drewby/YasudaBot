@@ -10,7 +10,7 @@ namespace test160728
         public CallHistoryPage()
         {
             InitializeComponent();
-            this.Title = $"@{App.PhoneNumbers.FirstOrDefault()}'s tweets";
+            this.Title = $"@{App.ScreenName}";
         }
 
         public void OnGoToChatScreen(object sender, EventArgs e)
