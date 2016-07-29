@@ -15,7 +15,7 @@
                      Spacing="15">
             <Label Text="twitter account:" />
             <Entry x:Name="phoneNumberText" Text="chomado" />
-            <Button x:Name="callHistoryButton" Text="catch" IsEnabled="true" Clicked="OnCallHisotry" />
+            <Button x:Name="callHistoryButton" Text="fetch" IsEnabled="true" Clicked="OnCallHisotry" />
 		</StackLayout>
     </ContentPage.Content>
 </ContentPage>

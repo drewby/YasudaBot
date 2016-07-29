@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
-		xmlns:local="clr-namespace:test160728;assambly=test160728"
-		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-		x:Class="test160728.CallHistoryPage">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="test160728.ChatPage">
 	<ContentPage.Padding>
 		<OnPlatform x:TypeArguments="Thickness"
                     iOS="20, 40, 20, 20"
@@ -16,8 +13,7 @@
 				Spacing="15"
 				>
 			
-			<ListView ItemsSource="{x:Static local:App.PhoneNumbers}" />
-            <Button x:Name="okButton" Text="OK" IsEnabled="true" Clicked="OnGoToChatScreen" />
+            <Label Text="chat screen" />
 		</StackLayout>
 	</ContentPage.Content>
 </ContentPage>
