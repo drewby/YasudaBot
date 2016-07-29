@@ -12,12 +12,12 @@ namespace test160728
             InitializeComponent();
         }
 
-        void OnCallHisotry(object sender, EventArgs e)
+        async void OnCallHisotry(object sender, EventArgs e)
         {
-            var screenName = phoneNumberText.Text;
-            //var tweetList =  
-            App.PhoneNumbers.Add(phoneNumberText.Text);
-            Navigation.PushAsync(new CallHistoryPage());        
+            var tweetList = await Core.Twitter.TweetList(phoneNumberText.Text);
+            App.PhoneNumbers.AddRange(tweetList);
+            await Navigation.PushAsync(new CallHistoryPage());        
         }
+
     }
 }
