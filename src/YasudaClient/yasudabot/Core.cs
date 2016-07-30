@@ -25,6 +25,7 @@ namespace Core
         public string Created;
         public string Text;
         public string UserProfileIconUrl;
+        public string ImageUri;
     }
 
     public enum Chatter { Me, Partner }

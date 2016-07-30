@@ -10,9 +10,10 @@ namespace yasudabot
         string name;
 		string text;
         string profileIconUri;
-        string created;
+        string imageUri;
+        DateTime created;
 		bool done;
-
+                
 		[JsonProperty(PropertyName = "id")]
 		public string Id
 		{
@@ -34,6 +35,13 @@ namespace yasudabot
             set { profileIconUri = value; }
         }
 
+        [JsonProperty(PropertyName = "imageUri")]
+        public string ImageUri
+        {
+            get { return imageUri; }
+            set { imageUri = value; }
+        }
+
 		[JsonProperty(PropertyName = "name")]
 		public string Name
 		{
@@ -42,7 +50,7 @@ namespace yasudabot
 		}
 
         [JsonProperty(PropertyName = "createdAt")]
-        public string Created
+        public DateTime Created
         {
             get { return created; }
             set { created = value; }

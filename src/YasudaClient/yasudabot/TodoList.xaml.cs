@@ -64,7 +64,7 @@ namespace yasudabot
             var todo = new TodoItem
             {
                 Text = text,
-                Created = DateTime.Now.ToString("HH:mm"),
+                Created = DateTime.Now,
                 Name = App.ScreenName, // 自分ではなく、宛先の人の名前
                 ProfileIconUri = "https://avatars0.githubusercontent.com/u/790012?v=3&s=200" // Xamarinアイコン
             };
@@ -72,12 +72,18 @@ namespace yasudabot
 
             //-- 返事 --
             await Task.Delay(500);
+
+            var img = "https://chomado.com/wp-content/uploads/2014/01/BagEO4QCAAANzv0-large.png";
             var res = new TodoItem { 
                 Name = App.ScreenName,
                 Text = "Response",
-                Created = DateTime.Now.ToString("HH:mm"),
+                Created = DateTime.Now,
                 ProfileIconUri = App.PartnerInfo.UserProfileIconUrl,
+                ImageUri = img,
             };
+            App.PartnerInfo.ImageUri = img;
+
+            this.imageBox.Source = img;
             await AddItem(res);
             //----
 
