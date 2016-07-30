@@ -8,21 +8,23 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 
-namespace test160728.Droid
+namespace yasudabot.Droid
 {
-    [Activity(Label = "test160728.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
-    {
-        protected override void OnCreate(Bundle bundle)
-        {
-            TabLayoutResource = Resource.Layout.Tabbar;
-            ToolbarResource = Resource.Layout.Toolbar;
+	[Activity (Label = "yasudabot.Droid", 
+		Icon = "@drawable/icon", 
+		MainLauncher = true, 
+		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
+		Theme = "@android:style/Theme.Holo.Light")]
+	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+	{
+		protected override void OnCreate (Bundle bundle)
+		{
+			base.OnCreate (bundle);
 
-            base.OnCreate(bundle);
-
-            global::Xamarin.Forms.Forms.Init(this, bundle);
-
-            LoadApplication(new App());
-        }
-    }
+			global::Xamarin.Forms.Forms.Init (this, bundle);
+			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
+			LoadApplication (new App ());
+		}
+	}
 }
+

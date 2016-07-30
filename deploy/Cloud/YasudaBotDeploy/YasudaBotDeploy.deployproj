@@ -26,7 +26,6 @@
   <!-- vertag<:>end -->
   <ItemGroup>
     <Folder Include="Scripts\" />
-    <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Deployment.targets">
@@ -35,6 +34,8 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <Content Include="Templates\WebSite.json" />
     <Content Include="Templates\WebSite.parameters.json" />
+    <None Include="Templates\ServiceFabric.json" />
+    <None Include="Templates\ServiceFabric.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

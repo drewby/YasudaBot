@@ -5,18 +5,25 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace test160728.iOS
+namespace yasudabot.iOS
 {
-    [Register("AppDelegate")]
-    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
-    {
-        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-        {
-            global::Xamarin.Forms.Forms.Init();
+	[Register ("AppDelegate")]
+	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+	{
+		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
+		{
+			global::Xamarin.Forms.Forms.Init ();
 
-            LoadApplication(new App());
+			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 
-            return base.FinishedLaunching(app, options);
-        }
-    }
+            // IMPORTANT: uncomment this code to enable sync on Xamarin.iOS
+            // For more information, see: http://go.microsoft.com/fwlink/?LinkId=620342
+            //SQLitePCL.CurrentPlatform.Init();
+
+			LoadApplication (new App ());
+
+			return base.FinishedLaunching (app, options);
+		}
+	}
 }
+

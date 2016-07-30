@@ -25,12 +25,60 @@ namespace YasudaBotFramework
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                //// calculate something for us to return
+                //int length = (activity.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                // Parse the user's meaning via Language Understanding (LUIS) in Cognitive Services
+                YasudaLUIS Luis = await LUIS.ParseUserInput(activity.Text);
+                string strRet = string.Empty;
+
+                if (Luis.intents.Count() > 0)
+                {
+                    var talent = string.Empty;
+                    var MediaType = string.Empty;
+
+                    switch (Luis.intents[0].intent)
+                    {
+                        case "ShowMeMedia":
+                            // call 
+                            talent = Luis.entities.Count() > 0 ? Luis.entities[0].entity : "";
+                            MediaType = Luis.entities.Count() > 1 ? Luis.entities[1].entity : "";
+                            strRet = $"Talent: {talent} / Media {MediaType} ";
+                            break;
+                        case "RecommandMedia":
+                            // call 
+                            talent = "Akarui Yasumura";
+                            MediaType = Luis.entities.Count() > 1 ? Luis.entities[1].entity : "";
+                            strRet = $"Talent: {talent} / Media {MediaType} ";
+                            break;
+                        default:
+                            strRet = "Hi! I'm the Yasuda Bot. I help your fun time :)." + "\n" +
+                                @"Simple Ask me like ""show me {talent Name} Video""." + "\n" +
+                                "Enjoy!"
+                                ;
+                            break;
+                    }
+
+                    if (talent != string.Empty)
+                    {
+                        
+                        BingVideoSearchData Videos = await BingVideoSearch.VideoSearch(talent, "ja-jp");
+                        if (Videos.value.Count() > 0)
+                        {
+                            strRet = $"Title:{Videos.value[0].name}. URL:{Videos.value[0].contentUrl}";
+                        }
+                    }
+
+                }
+                else
+                {
+                    strRet = "I'm sorry but I don't understand what you're asking";
+                }
+
+                /// return our reply to the user
+                Activity reply = activity.CreateReply(strRet);
                 await connector.Conversations.ReplyToActivityAsync(reply);
+
             }
             else
             {
@@ -68,5 +116,6 @@ namespace YasudaBotFramework
 
             return null;
         }
+      
     }
 }
