@@ -12,6 +12,9 @@ using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using Microsoft.ProjectOxford.Face;
 using System.IO;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 //using Microsoft.ServiceFabric.Services.Remoting.Client;
 //using Microsoft.ServiceFabric.Services.Client;
 
@@ -123,6 +126,33 @@ namespace YasudaAnalysis
                             }
                             item.Value.status = 1;
                         }
+                        if (item.Value.status == 1)
+                        {
+                            // Emotion API
+                            byte[] image = await this.byteCollection.GetOrAddAsync(tx, item.Key, new byte[0]);
+                            using (Stream memstream = new MemoryStream(image))
+                            {
+                                HttpClient cl = new HttpClient();
+                                var content = new StreamContent(memstream);
+                                content.Headers.ContentType = new MediaTypeHeaderValue(@"application/octet-stream");
+                                content.Headers.Add("Ocp-Apim-Subscription-Key", "5cf697b9bb84472f9392d25380f078bf");
+                                var res = await cl.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognize ", content);
+                                var resstr = await res.Content.ReadAsStringAsync();
+                                JArray toparr = JArray.Parse(resstr);
+                                JObject topobj = (JObject) toparr[0];
+                                JObject scoreobj = (JObject) topobj["scores"];
+                                item.Value.anger = (double) ((JValue) scoreobj["anger"]).Value;
+                                item.Value.contempt = (double)((JValue)scoreobj["contempt"]).Value;
+                                item.Value.disgust = (double)((JValue)scoreobj["disgust"]).Value;
+                                item.Value.fear = (double)((JValue)scoreobj["fear"]).Value;
+                                item.Value.happiness = (double)((JValue)scoreobj["happiness"]).Value;
+                                item.Value.neutral = (double)((JValue)scoreobj["neutral"]).Value;
+                                item.Value.sadness = (double)((JValue)scoreobj["sadness"]).Value;
+                                item.Value.surprise = (double)((JValue)scoreobj["surprise"]).Value;
+                            }
+                            item.Value.status = 2;
+                        }
+
                     }
 
                     //ServiceEventSource.Current.ServiceMessage(this, "Current Counter Value: {0}",
@@ -153,9 +183,17 @@ namespace YasudaAnalysis
             status = 0;
         }
 
-        public int status { get; set; } // 0 started, 1 got-face-information
+        public int status { get; set; } // 0 started, 1 got-face-information 2 got-emotion-information
         public double age { get; set; }
         public string gender { get; set; }
         public double smile { get; set; }
+        public double anger { get; set; }
+        public double contempt { get; set; }
+        public double disgust { get; set; }
+        public double fear { get; set; }
+        public double happiness { get; set; }
+        public double neutral { get; set; }
+        public double sadness { get; set; }
+        public double surprise { get; set; }
     }
 }
