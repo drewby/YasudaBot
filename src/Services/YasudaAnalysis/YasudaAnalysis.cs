@@ -10,6 +10,8 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting;
 using Microsoft.ServiceFabric.Data;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
+using Microsoft.ProjectOxford.Face;
+using System.IO;
 //using Microsoft.ServiceFabric.Services.Remoting.Client;
 //using Microsoft.ServiceFabric.Services.Client;
 
@@ -21,29 +23,35 @@ namespace YasudaAnalysis
     internal sealed class YasudaAnalysis : StatefulService, IYasudaAnalysis
     {
         private IReliableDictionary<int, AnalysisState> analysisCollection = null;
+        private IReliableDictionary<int, byte[]> byteCollection = null;
 
         public YasudaAnalysis(StatefulServiceContext context)
             : base(context)
         { }
 
-        public Task<int> GetComedy(int taskId)
+        public async Task<AnalysisState> GetResult(int partitionKey)
         {
-            throw new NotImplementedException();
+            AnalysisState result;
+            using (ITransaction tx = this.StateManager.CreateTransaction())
+            {
+                var state = await analysisCollection.TryGetValueAsync(tx, partitionKey);
+                result = state.Value;
+                await tx.CommitAsync();
+            }
+            return result;
         }
 
-        public Task<int> GetStatus(int taskId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task StartAnalysis(int partitionKey)
+        public async Task StartAnalysis(int partitionKey, byte[] imagebyte)
         {
             //this.analysisCollection =
             //    await this.StateManager.GetOrAddAsync<IReliableDictionary<string, AnalysisState>>("statuscollection");
 
             using (ITransaction tx = this.StateManager.CreateTransaction())
             {
-                await analysisCollection.AddAsync(tx, partitionKey, new AnalysisState());
+                var state = new AnalysisState();
+                //var state = new AnalysisState(imagebyte);
+                await analysisCollection.AddAsync(tx, partitionKey, state);
+                await byteCollection.AddAsync(tx, partitionKey, imagebyte);
                 await tx.CommitAsync();
             }
         }
@@ -81,6 +89,8 @@ namespace YasudaAnalysis
             //var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
             this.analysisCollection =
                 await this.StateManager.GetOrAddAsync<IReliableDictionary<int, AnalysisState>>("statuscollection");
+            this.byteCollection =
+                await this.StateManager.GetOrAddAsync<IReliableDictionary<int, byte[]>>("bytecollection");
 
             while (true)
             {
@@ -89,9 +99,31 @@ namespace YasudaAnalysis
                 using (var tx = this.StateManager.CreateTransaction())
                 {
                     //var result = await myDictionary.TryGetValueAsync(tx, "Counter");
-                    ///////書きかけ
                     var enumAnalysis = await this.analysisCollection.CreateEnumerableAsync(tx);
-                    foreachasync
+                    var aeor = enumAnalysis.GetAsyncEnumerator();
+                    while(await aeor.MoveNextAsync(cancellationToken))
+                    {
+                        var item = aeor.Current;
+                        if(item.Value.status == 0)
+                        {
+                            // Face API
+                            IFaceServiceClient fclient = new FaceServiceClient("3fc374c191c042f78caf27cf8b7e8900");
+                            byte[] image = await this.byteCollection.GetOrAddAsync(tx, item.Key, new byte[0]);
+                            using (Stream memstream = new MemoryStream(image))
+                            {
+                                var requiredFaceAttributes = new FaceAttributeType[] {
+                                    FaceAttributeType.Age,
+                                    FaceAttributeType.Gender,
+                                    FaceAttributeType.Smile
+                                };
+                                var res = await fclient.DetectAsync(memstream, returnFaceAttributes: requiredFaceAttributes);
+                                item.Value.age = res[0].FaceAttributes.Age;
+                                item.Value.gender = res[0].FaceAttributes.Gender;
+                                item.Value.smile = res[0].FaceAttributes.Smile;
+                            }
+                            item.Value.status = 1;
+                        }
+                    }
 
                     //ServiceEventSource.Current.ServiceMessage(this, "Current Counter Value: {0}",
                     //    result.HasValue ? result.Value.ToString() : "Value does not exist.");
@@ -110,11 +142,8 @@ namespace YasudaAnalysis
 
     public interface IYasudaAnalysis : IService
     {
-        Task StartAnalysis(int partitionKey /*, byte[] aaa*/);
-
-        Task<int> GetStatus(int partitionKey);
-
-        Task<int> GetComedy(int partitionKey);
+        Task StartAnalysis(int partitionKey, byte[] imagebyte);
+        Task<AnalysisState> GetResult(int partitionKey);
     }
 
     public class AnalysisState
@@ -124,6 +153,9 @@ namespace YasudaAnalysis
             status = 0;
         }
 
-        public int status { get; set; } // 0 started, 1 got-face-information, 2 got-comedy
+        public int status { get; set; } // 0 started, 1 got-face-information
+        public double age { get; set; }
+        public string gender { get; set; }
+        public double smile { get; set; }
     }
 }
