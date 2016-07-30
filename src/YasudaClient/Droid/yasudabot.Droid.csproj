@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,8 +45,14 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HockeySDK">
+      <HintPath>..\..\..\lib\hockeyappandroid-4.1.0.2\lib\android\HockeySDK.dll</HintPath>
+    </Reference>
+    <Reference Include="HockeySDK.AndroidBindings">
+      <HintPath>..\..\..\lib\hockeyappandroid-4.1.0.2\lib\android\HockeySDK.AndroidBindings.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile">
-      <HintPath>..\packages\Microsoft.Azure.Mobile.Client.2.1.0\lib\monoandroid\Microsoft.WindowsAzure.Mobile.dll</HintPath>  
+      <HintPath>..\packages\Microsoft.Azure.Mobile.Client.2.1.0\lib\monoandroid\Microsoft.WindowsAzure.Mobile.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile.Ext">
       <HintPath>..\packages\Microsoft.Azure.Mobile.Client.2.1.0\lib\monoandroid\Microsoft.WindowsAzure.Mobile.Ext.dll</HintPath>
