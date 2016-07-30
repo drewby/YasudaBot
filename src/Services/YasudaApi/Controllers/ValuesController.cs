@@ -1,35 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.ServiceFabric.Services.Client;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
+using YasudaAnalysis;
 
 namespace YasudaApi.Controllers
 {
     public class ValuesController : ApiController
     {
-        // GET api/values 
-        public IEnumerable<string> Get()
+        // POST api/values 
+        public async Task<int> Post([FromBody]string value)
         {
-            return new string[] { "value1", "value2" };
+            //string partitionKey = Guid.NewGuid().ToString();
+            Random ram = new Random();
+            int partitionKey = ram.Next();
+            IYasudaAnalysis analysis = ServiceProxy.Create<IYasudaAnalysis>(
+                new Uri("fabric:/Services/YasudaAnalysis"),
+                new ServicePartitionKey(partitionKey));
+            await analysis.StartAnalysis(partitionKey);
+
+            return partitionKey;
         }
 
-        // GET api/values/5 
+        // GET api/values/5
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/values 
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5 
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5 
-        public void Delete(int id)
-        {
-        }
     }
 }

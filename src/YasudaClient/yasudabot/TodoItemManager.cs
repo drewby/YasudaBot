@@ -71,7 +71,7 @@ namespace yasudabot
             get { return todoTable is Microsoft.WindowsAzure.MobileServices.Sync.IMobileServiceSyncTable<TodoItem>; }
         }
 
-        public async Task<ObservableCollection<TodoItem>> GetTodoItemsAsync(bool syncItems = false)
+        public async Task<ObservableCollection<TodoItem>> GetTodoItemsAsync(string screenName, bool syncItems = false)
         {
             try
             {
@@ -82,7 +82,10 @@ namespace yasudabot
                 }
 #endif
                 IEnumerable<TodoItem> items = await todoTable
-                    .Where(todoItem => !todoItem.Done)
+                    .Where(todoItem => !todoItem.Done
+                           && todoItem.Name == screenName
+                     //      && !string.IsNullOrEmpty(todoItem.Text)
+                          )
                     .ToEnumerableAsync();
 
                 return new ObservableCollection<TodoItem>(items);

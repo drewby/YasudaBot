@@ -7,6 +7,8 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "Services", "Services\Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YasudaApi", "YasudaApi\YasudaApi.csproj", "{9056A5B1-2462-49BA-AECF-6F67246C0F52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YasudaAnalysis", "YasudaAnalysis\YasudaAnalysis.csproj", "{C0FA03CA-8E80-4755-A353-42AFDB95E317}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +25,10 @@ Global
 		{9056A5B1-2462-49BA-AECF-6F67246C0F52}.Debug|x64.Build.0 = Debug|x64
 		{9056A5B1-2462-49BA-AECF-6F67246C0F52}.Release|x64.ActiveCfg = Release|x64
 		{9056A5B1-2462-49BA-AECF-6F67246C0F52}.Release|x64.Build.0 = Release|x64
+		{C0FA03CA-8E80-4755-A353-42AFDB95E317}.Debug|x64.ActiveCfg = Debug|x64
+		{C0FA03CA-8E80-4755-A353-42AFDB95E317}.Debug|x64.Build.0 = Debug|x64
+		{C0FA03CA-8E80-4755-A353-42AFDB95E317}.Release|x64.ActiveCfg = Release|x64
+		{C0FA03CA-8E80-4755-A353-42AFDB95E317}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

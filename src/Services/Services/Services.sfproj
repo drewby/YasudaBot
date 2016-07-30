@@ -27,6 +27,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YasudaAnalysis\YasudaAnalysis.csproj" />
     <ProjectReference Include="..\YasudaApi\YasudaApi.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

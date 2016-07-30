@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace yasudabot
 {
@@ -18,9 +19,17 @@ namespace yasudabot
         {
             this.tweets.IsVisible = true;
             var screenName = twitterAccountFrom.Text;
-            var tweetList = await Core.Twitter.TweetList(screenName);
+            var tweetDatas = await Core.Twitter.TweetList(screenName);
             App.ScreenName = screenName;
-            this.tweets.ItemsSource = tweetList;
+
+            App.PartnerInfo = new Core.ChatModel
+            {
+                Name = screenName,
+                Chatter = Core.Chatter.Partner,
+                UserProfileIconUrl = tweetDatas.UserProfileIconUrl,
+            };
+
+            this.tweets.ItemsSource = tweetDatas.Tweets;
             this.okButton.IsVisible = true;
         }
 
