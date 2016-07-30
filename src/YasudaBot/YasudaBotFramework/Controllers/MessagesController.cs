@@ -25,12 +25,46 @@ namespace YasudaBotFramework
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                //// calculate something for us to return
+                //int length = (activity.Text ?? string.Empty).Length;
 
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                // Parse the user's meaning via Language Understanding (LUIS) in Cognitive Services
+                YasudaLUIS Luis = await LUIS.ParseUserInput(activity.Text);
+                string strRet = string.Empty;
+
+                if (Luis.intents.Count() > 0)
+                {
+                    var talent = "Yasumura";
+                    var MediaType = "Video";
+
+                    switch (Luis.intents[0].intent)
+                    {
+                        case "ShowMeMedia":
+                            // call 
+                            talent = Luis.entities.Count() > 0 ? Luis.entities[0].entity : "";
+                            MediaType = Luis.entities.Count() > 1 ? Luis.entities[1].entity : "";
+                            strRet = "Talent: {talent} / Media {MediaType} ";
+                            break;
+                        case "RecommandMedia":
+                            // call 
+                            strRet = "Talent: {talent} / Media {MediaType} ";
+                            break;
+                        default:
+                            strRet = "Hi! I'm the Yasuda Bot. I help you see the Comedian." + "\n" +
+                                @"Simple ask me like ""show me {talent Name} Video""."
+                                ;
+                            break;
+                    }
+                }
+                else
+                {
+                    strRet = "I'm sorry but I don't understand what you're asking";
+                }
+
+                /// return our reply to the user
+                Activity reply = activity.CreateReply(strRet);
                 await connector.Conversations.ReplyToActivityAsync(reply);
+
             }
             else
             {
@@ -68,5 +102,7 @@ namespace YasudaBotFramework
 
             return null;
         }
+
+        
     }
 }
