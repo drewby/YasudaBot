@@ -103,7 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\AnalysisController.cs" />
     <Compile Include="OwinCommunicationListener.cs" />
     <Compile Include="YasudaApi.cs" />
     <Compile Include="Program.cs" />
