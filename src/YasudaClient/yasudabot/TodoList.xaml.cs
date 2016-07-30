@@ -12,6 +12,7 @@ namespace yasudabot
         {
             InitializeComponent();
 
+            this.Title = App.ScreenName;
             manager = TodoItemManager.DefaultManager;
 
             // OnPlatform<T> doesn't currently support the "Windows" target platform, so we have this check here.
@@ -33,31 +34,53 @@ namespace yasudabot
         {
             base.OnAppearing();
 
+            this.addButton.IsEnabled = false;
             // Set syncItems to true in order to synchronize the data on startup when running in offline mode
             await RefreshItems(true, syncItems: false);
+            this.addButton.IsEnabled = true;
         }
 
         // Data methods
         async Task AddItem(TodoItem item)
         {
             await manager.SaveTaskAsync(item);
-            todoList.ItemsSource = await manager.GetTodoItemsAsync();
+            todoList.ItemsSource = await manager.GetTodoItemsAsync(item.Name);
         }
 
         async Task CompleteItem(TodoItem item)
         {
             item.Done = true;
             await manager.SaveTaskAsync(item);
-            todoList.ItemsSource = await manager.GetTodoItemsAsync();
+            todoList.ItemsSource = await manager.GetTodoItemsAsync(item.Name);
         }
 
         public async void OnAdd(object sender, EventArgs e)
         {
-            var todo = new TodoItem { Name = newItemName.Text };
+            var text = newItemName.Text;
+            if (string.IsNullOrEmpty(text)) 
+                return;
+
+            this.addButton.IsEnabled = false;
+            var todo = new TodoItem { 
+                Text = text,
+                Name = App.ScreenName, // 自分ではなく、宛先の人の名前
+                ProfileIconUri = "https://avatars0.githubusercontent.com/u/790012?v=3&s=200" // Xamarinアイコン
+            };
             await AddItem(todo);
+
+            //-- 返事 --
+
+            var res = new TodoItem { 
+                Name = App.ScreenName,
+                Text = "Response",
+                ProfileIconUri = App.PartnerInfo.UserProfileIconUrl,
+            };
+            await AddItem(res);
+            //----
 
             newItemName.Text = string.Empty;
             newItemName.Unfocus();
+            this.addButton.IsEnabled = true;
         }
 
         // Event handlers
@@ -96,6 +119,7 @@ namespace yasudabot
         // http://developer.xamarin.com/guides/cross-platform/xamarin-forms/working-with/listview/#pulltorefresh
         public async void OnRefresh(object sender, EventArgs e)
         {
+            this.addButton.IsEnabled = false;
             var list = (ListView)sender;
             Exception error = null;
             try
@@ -115,6 +139,7 @@ namespace yasudabot
             {
                 await DisplayAlert("Refresh Error", "Couldn't refresh data (" + error.Message + ")", "OK");
             }
+            this.addButton.IsEnabled = true;
         }
 
         public async void OnSyncItems(object sender, EventArgs e)
@@ -126,7 +151,7 @@ namespace yasudabot
         {
             using (var scope = new ActivityIndicatorScope(syncIndicator, showActivityIndicator))
             {
-                todoList.ItemsSource = await manager.GetTodoItemsAsync(syncItems);
+                todoList.ItemsSource = await manager.GetTodoItemsAsync(App.ScreenName, syncItems);
             }
         }
 

@@ -7,7 +7,9 @@ namespace yasudabot
 	public class TodoItem
 	{
 		string id;
-		string name;
+        string name;
+		string text;
+        string profileIconUri;
 		bool done;
 
 		[JsonProperty(PropertyName = "id")]
@@ -17,7 +19,21 @@ namespace yasudabot
 			set { id = value;}
 		}
 
-		[JsonProperty(PropertyName = "text")]
+        [JsonProperty(PropertyName = "text")]
+        public string Text
+        {
+            get { return text; }
+            set { text = value; }
+        }
+
+        [JsonProperty(PropertyName = "profileIconUri")]
+        public string ProfileIconUri
+        {
+            get { return profileIconUri; }
+            set { profileIconUri = value; }
+        }
+
+		[JsonProperty(PropertyName = "name")]
 		public string Name
 		{
 			get { return name; }

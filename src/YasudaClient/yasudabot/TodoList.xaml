@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage 	xmlns="http://xamarin.com/schemas/2014/forms" 
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-				x:Class="yasudabot.TodoList"
-				Title="Azure Todo">
+				x:Class="yasudabot.TodoList">
   <Grid RowSpacing="0">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -24,11 +23,13 @@
                   Placeholder="Hello!" />
         <StackLayout x:Name="buttonsPanel" Grid.Column="1" Orientation="Horizontal" HorizontalOptions="StartAndExpand">
           <Button Text="send"
+				  x:Name="addButton"
                   MinimumHeightRequest="30"
                   Clicked="OnAdd" />
         </StackLayout>
       </Grid>
     </StackLayout>
+		
     <ListView x:Name="todoList"
 				ItemSelected="OnSelected"
 				IsPullToRefreshEnabled="true" Refreshing="OnRefresh"
@@ -40,13 +41,15 @@
               <MenuItem Clicked="OnComplete" Text="Complete" CommandParameter="{Binding .}"/>
             </ViewCell.ContextActions>
             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
-              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                <Label Text="{Binding Name}"  />
+              <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Horizontal">
+              	<Image Source="{Binding ProfileIconUri}" WidthRequest="25"  />
+				<Label Text="{Binding Text}" XAlign="End" />
               </StackLayout>
             </StackLayout>
           </ViewCell>
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
+		
   </Grid>
 </ContentPage>
