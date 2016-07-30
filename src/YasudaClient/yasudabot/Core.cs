@@ -66,7 +66,7 @@ namespace Core
         /// <summary>
         /// アクセストークンなど、投稿に必要なキーを取得。（キャッシュがあればキャッシュから。無かったらファイルから読み込む）
         /// </summary>
-        private static Keys MyTokens => _myTokens ?? (_myTokens = new Keys { AccessSecret = yasudabot.MyKeys.AccessSecret, AccessToken = yasudabot.MyKeys.AccessToken, ConsumerKey = yasudabot.MyKeys.ConsumerKey, ConsumerSecret = yasudabot.MyKeys.ConsumerSecret });
+        private static Keys MyTokens => _myTokens ?? (_myTokens = new Keys { AccessSecret = yasudabot.MyTwitterApiKeys.AccessSecret, AccessToken = yasudabot.MyTwitterApiKeys.AccessToken, ConsumerKey = yasudabot.MyTwitterApiKeys.ConsumerKey, ConsumerSecret = yasudabot.MyTwitterApiKeys.ConsumerSecret });
         static Keys _myTokens = null;
 
         #endregion
