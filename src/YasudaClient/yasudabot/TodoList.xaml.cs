@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 
 namespace yasudabot
@@ -28,6 +30,8 @@ namespace yasudabot
 
                 buttonsPanel.Children.Add(syncButton);
             }
+
+
         }
 
         protected override async void OnAppearing()
@@ -37,6 +41,8 @@ namespace yasudabot
             this.addButton.IsEnabled = false;
             // Set syncItems to true in order to synchronize the data on startup when running in offline mode
             await RefreshItems(true, syncItems: false);
+            await Plugin.Media.CrossMedia.Current.Initialize();
+            
             this.addButton.IsEnabled = true;
         }
 
@@ -85,11 +91,43 @@ namespace yasudabot
 
             this.imageBox.Source = img;
             await AddItem(res);
+
+            await TakePicture();
             //----
 
             newItemName.Text = string.Empty;
             newItemName.Unfocus();
             this.addButton.IsEnabled = true;
+        }
+
+        async Task TakePicture()
+        { 
+            await CrossMedia.Current.Initialize();
+
+            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            {
+                //DisplayAlert("No Camera", ":( No camera available.", "OK");
+                return;
+            }
+
+            var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+            {
+                SaveToAlbum = true,
+               Directory = "Sample",
+               Name = "test.jpg"
+            });
+
+            if (file == null)
+                return;
+
+            await DisplayAlert("File Location", file.Path, "OK");
+
+            this.imageBox.Source = ImageSource.FromStream(() =>
+            {
+                var stream = file.GetStream();
+                file.Dispose();
+                return stream;
+            });
         }
 
         // Event handlers
@@ -101,7 +139,7 @@ namespace yasudabot
                 // Not iOS - the swipe-to-delete is discoverable there
                 if (Device.OS == TargetPlatform.Android)
                 {
-                    await DisplayAlert(todo.Name, "Press-and-hold to complete task " + todo.Name, "Got it!");
+                    //await DisplayAlert(todo.Name, "Press-and-hold to complete task " + todo.Name, "Got it!");
                 }
                 else
                 {

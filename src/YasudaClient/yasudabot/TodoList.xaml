@@ -6,7 +6,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="200" />
+      <RowDefinition Height="20" />
     </Grid.RowDefinitions>
     <ActivityIndicator Grid.RowSpan="2"
                        HorizontalOptions="Center"
