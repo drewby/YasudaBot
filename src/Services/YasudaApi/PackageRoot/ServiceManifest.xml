@@ -29,7 +29,7 @@
       <!-- このエンドポイントは、リッスンするポートを取得するために通信リスナーによって
            使用されます。使用しているサービスがパーティション化されている場合、
            このポートはコード内に配置されている別のパーティションのレプリカと共有されます。-->
-      <Endpoint Protocol="http" Name="ServiceEndpoint" Type="Input" Port="8081" />
+      <Endpoint Protocol="http" Name="ServiceEndpoint" Type="Input" Port="8739" />
     </Endpoints>
   </Resources>
 </ServiceManifest>
