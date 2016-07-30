@@ -434,7 +434,7 @@
       },
       "sku": {
         "name": "[variables('vmNodeType0Size')]",
-        "capacity": "5",
+        "capacity": "3",
         "tier": "Standard"
       },
       "tags": {
@@ -478,7 +478,7 @@
             },
             "httpGatewayEndpointPort": "[variables('nt0fabricHttpGatewayPort')]",
             "isPrimary": true,
-            "vmInstanceCount": 5
+            "vmInstanceCount": 3
           }
         ],
         "provisioningState": "Default",
