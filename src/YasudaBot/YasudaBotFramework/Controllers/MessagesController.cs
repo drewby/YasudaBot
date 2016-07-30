@@ -8,9 +8,15 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
+using System.IO;
 
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.ProjectOxford.Face.Contract;
+using Microsoft.ProjectOxford.Face;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace YasudaBotFramework
 {
@@ -34,7 +40,21 @@ namespace YasudaBotFramework
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, MakeRootDialog);
+
+                if (activity.Attachments.Count > 0)
+                {
+
+                    Face[] faces = await UploadAndDetectFaces(activity.Attachments[0].ContentUrl);
+
+
+                    ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                    Activity reply = activity.CreateReply($"Age:{faces[0].FaceAttributes.Age}");
+                    await connector.Conversations.ReplyToActivityAsync(reply);
+                }
+                else
+                {
+                    await Conversation.SendAsync(activity, MakeRootDialog);
+                }
 
                 //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 ////// calculate something for us to return
@@ -130,8 +150,6 @@ namespace YasudaBotFramework
             return null;
         }
 
-
-
         internal static IDialog<FunVideoState> MakeRootDialog()
         {
 
@@ -144,7 +162,6 @@ namespace YasudaBotFramework
                             // Actually process the sandwich order...
 
                             string result = string.Empty;
-
                             switch (completed.Video)
                             {
                                 case ElectedVideo.Yasumura01:
@@ -164,8 +181,7 @@ namespace YasudaBotFramework
                                     break;
                             }
 
-
-                            await context.PostAsync($"Watch this: {result}");
+                            await context.PostAsync($"{result}");
                         }
 
                         catch (FormCanceledException<FunVideoState> e)
@@ -184,6 +200,61 @@ namespace YasudaBotFramework
                 });
         }
 
+
+        private async Task<Face[]> UploadAndDetectFaces(string imageFilePath)
+        {
+            try
+            {
+                
+
+
+                var faceServiceClient = new FaceServiceClient("cc6905d4d8414b5ebe8341f17d776e94");
+
+                var requiredFaceAttributes = new FaceAttributeType[] {
+                    FaceAttributeType.Age,
+                    FaceAttributeType.Gender,
+                    FaceAttributeType.Smile,
+                    FaceAttributeType.FacialHair,
+                    FaceAttributeType.HeadPose,
+                    FaceAttributeType.Glasses
+                };
+
+                var faces = await faceServiceClient.DetectAsync(
+                    imageFilePath,
+                    returnFaceLandmarks: true,
+                    returnFaceAttributes: requiredFaceAttributes);
+                return faces;
+
+            }
+            catch (Exception)
+            {
+                return new Face[0];
+            }
+        }
+
+        static void FileUploadToBlob(string fileURL, string blobName)
+        {
+            // Retrieve storage account from connection string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                CloudConfigurationManager.GetSetting("DefaultEndpointsProtocol=https;AccountName=yasudadx;AccountKey=ECdL8JFoFqCJvIOcHT1kYUcxmnHjopFw6gUQFqHkUuf1SMQByH5ct8ycN6yTE8P2TCMSZNRK+xjRFhAwj+ZJaA=="));
+
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Retrieve reference to a previously created container.
+            CloudBlobContainer container = blobClient.GetContainerReference("faceapi");
+
+            // Retrieve reference to a blob named "myblob".
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(blobName);
+
+            // Create or overwrite the "myblob" blob with contents from a local file.
+            using (var fileStream = System.IO.File.OpenRead(fileURL))
+            {
+                blockBlob.UploadFromStream(fileStream);
+            }
+        }
+
+
     }
 
     public enum ElectedVideo {
@@ -199,6 +270,10 @@ namespace YasudaBotFramework
         [Prompt("Which Video do you want to watch? {||}", ChoiceFormat = "{1}")]
 
         public ElectedVideo Video;
+
+        [Prompt("Please send your picture to get special!")]
+        public string Picture;
+
         public static IForm<FunVideoState> BuildForm()
         {
 
