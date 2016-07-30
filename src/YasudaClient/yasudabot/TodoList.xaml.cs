@@ -61,18 +61,21 @@ namespace yasudabot
                 return;
 
             this.addButton.IsEnabled = false;
-            var todo = new TodoItem { 
+            var todo = new TodoItem
+            {
                 Text = text,
+                Created = DateTime.Now.ToString("HH:mm"),
                 Name = App.ScreenName, // 自分ではなく、宛先の人の名前
                 ProfileIconUri = "https://avatars0.githubusercontent.com/u/790012?v=3&s=200" // Xamarinアイコン
             };
             await AddItem(todo);
 
             //-- 返事 --
-
+            await Task.Delay(500);
             var res = new TodoItem { 
                 Name = App.ScreenName,
                 Text = "Response",
+                Created = DateTime.Now.ToString("HH:mm"),
                 ProfileIconUri = App.PartnerInfo.UserProfileIconUrl,
             };
             await AddItem(res);

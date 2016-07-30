@@ -42,6 +42,7 @@
             </ViewCell.ContextActions>
             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="15,5,0,0">
               <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Horizontal">
+				<Label Text="{Binding Created}" XAlign="Start" />
               	<Image Source="{Binding ProfileIconUri}" WidthRequest="25"  />
 				<Label Text="{Binding Text}" XAlign="End" />
               </StackLayout>

@@ -252,4 +252,4 @@ paket-files/
 .idea/
 *.sln.iml
 
-src/YasudaClient/yasudabot/AppConfig/MyTwitterApiKeys.cs
+src/YasudaClient/yasudabot/AppConfig/MyKeys.cs
