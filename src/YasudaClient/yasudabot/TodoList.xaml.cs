@@ -68,6 +68,16 @@ namespace yasudabot
             };
             await AddItem(todo);
 
+            //-- 返事 --
+
+            var res = new TodoItem { 
+                Name = App.ScreenName,
+                Text = "Response",
+                ProfileIconUri = App.PartnerInfo.UserProfileIconUrl,
+            };
+            await AddItem(res);
+            //----
+
             newItemName.Text = string.Empty;
             newItemName.Unfocus();
             this.addButton.IsEnabled = true;
