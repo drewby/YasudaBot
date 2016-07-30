@@ -88,7 +88,7 @@ namespace yasudabot
                           )
                     .ToEnumerableAsync();
 
-                return new ObservableCollection<TodoItem>(items);
+                return new ObservableCollection<TodoItem>(items.OrderByDescending(x => x.Created));
             }
             catch (MobileServiceInvalidOperationException msioe)
             {
