@@ -34,8 +34,8 @@ namespace YasudaBotFramework
 
                 if (Luis.intents.Count() > 0)
                 {
-                    var talent = "Yasumura";
-                    var MediaType = "Video";
+                    var talent = string.Empty;
+                    var MediaType = string.Empty;
 
                     switch (Luis.intents[0].intent)
                     {
@@ -43,18 +43,32 @@ namespace YasudaBotFramework
                             // call 
                             talent = Luis.entities.Count() > 0 ? Luis.entities[0].entity : "";
                             MediaType = Luis.entities.Count() > 1 ? Luis.entities[1].entity : "";
-                            strRet = "Talent: {talent} / Media {MediaType} ";
+                            strRet = $"Talent: {talent} / Media {MediaType} ";
                             break;
                         case "RecommandMedia":
                             // call 
-                            strRet = "Talent: {talent} / Media {MediaType} ";
+                            talent = "Akarui Yasumura";
+                            MediaType = Luis.entities.Count() > 1 ? Luis.entities[1].entity : "";
+                            strRet = $"Talent: {talent} / Media {MediaType} ";
                             break;
                         default:
-                            strRet = "Hi! I'm the Yasuda Bot. I help you see the Comedian." + "\n" +
-                                @"Simple ask me like ""show me {talent Name} Video""."
+                            strRet = "Hi! I'm the Yasuda Bot. I help your fun time :)." + "\n" +
+                                @"Simple Ask me like ""show me {talent Name} Video""." + "\n" +
+                                "Enjoy!"
                                 ;
                             break;
                     }
+
+                    if (talent != string.Empty)
+                    {
+                        
+                        BingVideoSearchData Videos = await BingVideoSearch.VideoSearch(talent, "ja-jp");
+                        if (Videos.value.Count() > 0)
+                        {
+                            strRet = $"Title:{Videos.value[0].name}. URL:{Videos.value[0].contentUrl}";
+                        }
+                    }
+
                 }
                 else
                 {
@@ -102,7 +116,6 @@ namespace YasudaBotFramework
 
             return null;
         }
-
-        
+      
     }
 }
