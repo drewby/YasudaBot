@@ -7,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using HockeyApp.Android;
 
 namespace yasudabot.Droid
 {
@@ -21,10 +22,38 @@ namespace yasudabot.Droid
 		{
 			base.OnCreate (bundle);
 
-			global::Xamarin.Forms.Forms.Init (this, bundle);
+            global::Xamarin.Forms.Forms.Init (this, bundle);
 			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
 			LoadApplication (new App ());
-		}
-	}
+
+            CrashManager.Register(this);
+            CheckForUpdates();
+        }
+
+        void CheckForUpdates()
+        {
+            // Remove this for store builds!
+            UpdateManager.Register(this);
+        }
+
+        void UnregisterManagers()
+        {
+            UpdateManager.Unregister();
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+
+            UnregisterManagers();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            UnregisterManagers();
+        }
+    }
 }
 

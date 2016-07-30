@@ -43,7 +43,7 @@
       <DependentUpon>FirstPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core.cs" />
-    <Compile Include="AppConfig\MyTwitterApiKeys.cs" />
+    <Compile Include="AppConfig\MyKeys.cs" />
     <Compile Include="AppConfig\MyKeys_sample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
