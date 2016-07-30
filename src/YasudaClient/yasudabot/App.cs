@@ -7,6 +7,8 @@ namespace yasudabot
 	public class App : Application
 	{
         public static string ScreenName = "";
+        public static Core.ChatModel PartnerInfo = new Core.ChatModel();
+
 		public App ()
 		{
 			// The root page of your application

@@ -4,10 +4,26 @@ using System.Collections.Generic;
 using System.IO;
 using CoreTweet;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Core
 {
+
+    #region Chat
+
+    public class ChatModel
+    {
+        public string Name;
+        public Chatter Chatter; // 自分？相手？
+        //public DateTime Created;
+        public string Text;
+        public string UserProfileIconUrl;
+    }
+
+    public enum Chatter { Me, Partner }
+    #endregion
+
     /// <summary>
     /// 投稿に使う各種キーの集まり。（型定義）
     /// </summary>
@@ -18,10 +34,14 @@ namespace Core
         public string AccessToken { get; set; }
         public string AccessSecret { get; set; }
     }
+
     public class Twitter
     {
+        public string UserProfileIconUrl;
+        public List<string> Tweets;
+
         // ツイート一覧 (スクリーンネームを渡したら、そのアカウントのツイート一覧を返す)
-        public static async Task<List<string>> TweetList(string screenName)
+        public static async Task<Twitter> TweetList(string screenName)
         {
             const int tweetCount = 10;
 
@@ -39,7 +59,7 @@ namespace Core
             {
                 tweetList.Add(tweet.Text);
             }
-            return tweetList;
+            return new Twitter { Tweets = tweetList, UserProfileIconUrl = tweets.FirstOrDefault()?.User.ProfileImageUrl ?? "" };
         }
         #region OAuth 認証
 
